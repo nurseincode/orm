@@ -10,6 +10,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://orm_dev:123456@lo
 
 db = SQLAlchemy(app)
 
+# Model
+class Product(db.Model):
+    __tablename__ = "products"
+
 
 @app.route('/')
 def home():
