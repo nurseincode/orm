@@ -28,10 +28,11 @@ def home():
     return 'Hello!'
 
 
-@app.route('/init_db')
+# @app.route('/init_db')
+@app.cli.command('init_db')
 def init_db():
     db.create_all()
-    return('Created tables')
+    print('Created tables')
 
 
 
