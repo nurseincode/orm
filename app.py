@@ -27,13 +27,46 @@ class Product(db.Model):
 def home():
     return 'Hello!'
 
+@app.route('/products')
+def get_all_products():
+    # Generate a statement
+    # SELECT * FROM products;
+    stmt = db.select(Product)
+    # Execute the statement
+    products = db.session.execute(stmt)
+    return products
+
 
 # @app.route('/init_db')
 @app.cli.command('init_db')
 def init_db():
+    db.drop_all()
     db.create_all()
     print('Created tables')
 
+@app.cli.command('seed_db')
+def seed_db():
+    products = [
+        Product(
+            name='Product 1',
+            description='This is a new product',
+            price=12.99,
+            stock=15
+        ),
+         Product(
+            name='Product 2',
+            description='Second product',
+            price=39.99,
+            stock=20
+        )
+    ]
+    
+
+    db.session.add_all(products)
+
+    db.session.commit()
+
+    print('DB Seeded')
 
 
 
