@@ -34,7 +34,8 @@ def get_all_products():
     stmt = db.select(Product)
     # Execute the statement
     products = db.session.execute(stmt)
-    return products
+    print(list(products))
+    return ''
 
 
 # @app.route('/init_db')
