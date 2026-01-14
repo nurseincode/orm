@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy 
 from sqlalchemy import Numeric
+from flask_marshmallow import Marshmallow
 
 
 app = Flask(__name__)
@@ -10,7 +11,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://orm_dev:123456@localhost:5432/orm_db'
 
 db = SQLAlchemy(app)
-
+ma = Marshmallow(app)
 # Model
 # Just declares and configures the model in memory - the physical DB is unaffected
 class Product(db.Model):
@@ -23,6 +24,11 @@ class Product(db.Model):
     price = db.Column(db.Numeric(10,2))
     stock = db.Column(db.Integer, db.CheckConstraint('stock>=0'))
 
+# Schema
+class ProductSchema(ma.Schema):
+    class Meta:
+        fields = ('id', 'name', 'description', 'stock')
+
 @app.route('/')
 def home():
     return 'Hello!'
@@ -34,7 +40,7 @@ def get_all_products():
     stmt = db.select(Product)
     # Execute the statement
     products = db.session.scalars(stmt)
-    return(list(products))
+    return ProductSchema().dump(products)
     
 
 
