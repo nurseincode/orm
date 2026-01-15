@@ -2,6 +2,8 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy 
 from sqlalchemy import Numeric
 from flask_marshmallow import Marshmallow
+from marshmallow_sqlalchemy import SQLAlchemySchema, auto_field
+from flask import jsonify
 
 
 app = Flask(__name__)
@@ -25,9 +27,15 @@ class Product(db.Model):
     stock = db.Column(db.Integer, db.CheckConstraint('stock>=0'))
 
 # Schema
-class ProductSchema(ma.Schema):
+class ProductSchema(SQLAlchemySchema):
     class Meta:
-        fields = ('id', 'name', 'description', 'stock')
+        model = Product
+        load_instance = True
+
+    id = auto_field()
+    name = auto_field()
+    description = auto_field()
+    stock = auto_field()
 
 @app.route('/')
 def home():
@@ -39,8 +47,8 @@ def get_all_products():
     # SELECT * FROM products;
     stmt = db.select(Product)
     # Execute the statement
-    products = db.session.scalars(stmt)
-    return ProductSchema().dump(products)
+    products = db.session.scalars(stmt).all()
+    return jsonify(ProductSchema(many=True).dump(products))
     
 
 
