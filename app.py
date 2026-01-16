@@ -35,7 +35,9 @@ class ProductSchema(SQLAlchemySchema):
     id = auto_field()
     name = auto_field()
     description = auto_field()
+    price = auto_field()
     stock = auto_field()
+    
 
 @app.route('/')
 def home():
@@ -49,7 +51,15 @@ def get_all_products():
     # Execute the statement
     products = db.session.scalars(stmt).all()
     return jsonify(ProductSchema(many=True).dump(products))
-    
+
+@app.route('/products/<int:product_id>')
+def get_one_product(product_id):
+    # Get Product with given id
+    # SELECT * FROM products WHERE id = product_id;
+    stmt = db.select(Product).filter_by(id=product_id)
+    product = db.session.scalar(stmt)
+    return (ProductSchema(many=False).dump(product))
+
 
 
 # @app.route('/init_db')
