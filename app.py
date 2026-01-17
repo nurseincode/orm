@@ -26,11 +26,17 @@ class Product(db.Model):
     price = db.Column(db.Numeric(10,2))
     stock = db.Column(db.Integer, db.CheckConstraint('stock>=0'))
 
-# Schema
+# Schema - marshmallow at its simplest
+# class(ProductSchema(ma.schema)):
+    # class Meta:
+#       fields = ('id', 'name', 'description', 'price', 'stock')
+
+
 class ProductSchema(SQLAlchemySchema):
     class Meta:
         model = Product
         load_instance = True
+
 
     id = auto_field()
     name = auto_field()
@@ -43,6 +49,8 @@ class ProductSchema(SQLAlchemySchema):
 def home():
     return 'Hello!'
 
+
+# R - Read (all)
 @app.route('/products')
 def get_all_products():
     # Generate a statement
@@ -52,15 +60,29 @@ def get_all_products():
     products = db.session.scalars(stmt).all()
     return jsonify(ProductSchema(many=True).dump(products))
 
+# Read - Read (one)
 @app.route('/products/<int:product_id>')
 def get_one_product(product_id):
     # Get Product with given id
     # SELECT * FROM products WHERE id = product_id;
     stmt = db.select(Product).filter_by(id=product_id)
     product = db.session.scalar(stmt)
-    return (ProductSchema(many=False).dump(product))
-
-
+    if product:
+        return ProductSchema().dump(product)
+    else:
+        return {"error": f"Product with id {product_id} not found"}, 404
+    
+# C - Create (one)
+@app.route('/prodcuts', methods=['POST'])
+def create_product():
+    
+    # Create a new instance
+    new_product = Product(
+        name = ,
+        descriptio  = ,
+        price = ,
+        stock = 
+    )
 
 # @app.route('/init_db')
 @app.cli.command('init_db')
