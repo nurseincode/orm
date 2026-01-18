@@ -75,7 +75,7 @@ def get_one_product(product_id):
 # C - Create (one)
 @app.route('/prodcuts', methods=['POST'])
 def create_product():
-    
+
     # Create a new instance
     new_product = Product(
         name = ,
