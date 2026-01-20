@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy 
 from sqlalchemy import Numeric
 from flask_marshmallow import Marshmallow
@@ -73,16 +73,27 @@ def get_one_product(product_id):
         return {"error": f"Product with id {product_id} not found"}, 404
     
 # C - Create (one)
-@app.route('/prodcuts', methods=['POST'])
+@app.route('/products', methods=['POST'])
 def create_product():
+    # Parse the incoming JSON body to a dict
+    data = request.get_json()
 
     # Create a new instance
     new_product = Product(
-        name = ,
-        descriptio  = ,
-        price = ,
-        stock = 
+        name = data['name'],
+        description  = data['description'],
+        price = data['price'],
+        stock = data['stock']
     )
+    
+    
+# Add to db session
+    db.session.add(new_product)
+# Commit to the db
+    db.session.commit()
+# Return the new product
+    return ProductSchema().dump(new_product)
+
 
 # @app.route('/init_db')
 @app.cli.command('init_db')
