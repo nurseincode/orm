@@ -35,8 +35,7 @@ class Product(db.Model):
 class ProductSchema(SQLAlchemySchema):
     class Meta:
         model = Product
-        load_instance = True
-
+        load_instance = False
 
     id = auto_field()
     name = auto_field()
@@ -76,7 +75,7 @@ def get_one_product(product_id):
 @app.route('/products', methods=['POST'])
 def create_product():
     # Parse the incoming JSON body to a dict
-    data = request.get_json()
+    data = ProductSchema().load(request.get_json())
 
     # Create a new instance
     new_product = Product(
