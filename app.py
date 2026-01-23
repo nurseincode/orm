@@ -23,8 +23,8 @@ class Product(db.Model):
 
     name = db.Column(db.String(150), nullable=False)
     description = db.Column(db.Text)
-    price = db.Column(db.Numeric(10,2))
-    stock = db.Column(db.Integer, db.CheckConstraint('stock>=0'))
+    price = db.Column(db.Numeric(10,2), nullable=False)
+    stock = db.Column(db.Integer, db.CheckConstraint('stock>=0'), default=0)
 
 # Schema - marshmallow at its simplest
 # class(ProductSchema(ma.schema)):
@@ -75,7 +75,7 @@ def get_one_product(product_id):
 @app.route('/products', methods=['POST'])
 def create_product():
     # Parse the incoming JSON body to a dict
-    data = ProductSchema().load(request.get_json())
+    data = ProductSchema(exclude=['id']).load(request.get_json())
 
     # Create a new instance
     new_product = Product(
