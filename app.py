@@ -82,7 +82,7 @@ def create_product():
         name = data['name'],
         description  = data['description'],
         price = data['price'],
-        stock = data['stock']
+        stock = data.get('stock')
     )
     
     
