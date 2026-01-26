@@ -22,7 +22,7 @@ class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     name = db.Column(db.String(150), nullable=False)
-    description = db.Column(db.Text)
+    description = db.Column(db.Text, default='')
     price = db.Column(db.Numeric(10,2), nullable=False)
     stock = db.Column(db.Integer, db.CheckConstraint('stock>=0'), default=0)
 
@@ -80,7 +80,7 @@ def create_product():
     # Create a new instance
     new_product = Product(
         name = data['name'],
-        description  = data['description'],
+        description  = data.get('description', ''),
         price = data['price'],
         stock = data.get('stock')
     )
@@ -91,7 +91,11 @@ def create_product():
 # Commit to the db
     db.session.commit()
 # Return the new product
-    return ProductSchema().dump(new_product)
+    return ProductSchema().dump(new_product), 201
+
+# Delete product
+# DELETE
+# 1. Select the product with the given product_id
 
 
 # @app.route('/init_db')
