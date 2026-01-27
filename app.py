@@ -93,9 +93,28 @@ def create_product():
 # Return the new product
     return ProductSchema().dump(new_product), 201
 
-# Delete product
+# D - Delete product
 # DELETE
-# 1. Select the product with the given product_id
+# 1. Create statement to select the product with the given product_id
+# 2. Execute the statement(scalar)
+# 3. Delete the product (if exists), otherwise return an error
+# 4. If deletion successful, return status code with no content
+
+@app.route('/products/<int:product_id>', methods=['DELETE'])
+def delete_one_product(product_id):
+    # Get Product with given id
+    # SELECT * FROM products WHERE id = product_id;
+    stmt = db.select(Product).filter_by(id=product_id)
+    product = db.session.scalar(stmt)
+    if product:
+        db.session.delete(product)
+        db.session.commit()
+        return{}, 204
+    else:
+        return {"error": f"Product with id {product_id} not found"}, 404
+
+# U - Update one product
+
 
 
 # @app.route('/init_db')
