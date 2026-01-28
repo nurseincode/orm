@@ -114,6 +114,9 @@ def delete_one_product(product_id):
         return {"error": f"Product with id {product_id} not found"}, 404
 
 # U - Update one product
+@app.route('/products/<int:products_id', methods=['PUT'])
+def update_one_product(product_id):
+    ç
 
 
 
